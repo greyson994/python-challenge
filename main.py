@@ -1,45 +1,74 @@
 import os
 import csv
 
-#Import budget_data.csv
-pybank_path = os.path.join("budget_data.csv")
+#import election_data.csv
+pypoll_csv = os.path.join ("election_data.csv")
 
-#declare arrays
-date = []
-profit_loss = []
-change_in_profit_loss = []
+#declare arrays and set variables to zero
+total_votes = 0
+candidates = []
+total_votes_0=0
+total_votes_1=0
+total_votes_2=0
+total_votes_3=0
 
 #extract data and calculate
-with open (pybank_path, newline ="") as pybank_data:
-    pybank_reader =csv.reader(pybank_data, delimiter=",")
-    next(pybank_reader)
-    for row in pybank_reader:
-        date.append(row[0])
-        profit_loss.append(int(row[1]))
+with open(pypoll_csv, newline = "") as csvfile:
+    pypoll_reader = csv.reader(csvfile, delimiter=",")
+    next(pypoll_reader)
 
-    for i in range(1,len(profit_loss)):
-        change_in_profit_loss.append(int(profit_loss[i]) - int(profit_loss[i-1]))
-        max_profit = max(change_in_profit_loss)
-        max_loss = min(change_in_profit_loss)
-        max_profit_loss_date = str(date[change_in_profit_loss.index(max(change_in_profit_loss))+1])
-        min_profit_loss_date = str(date[change_in_profit_loss.index(min(change_in_profit_loss))+1])
+    for row in pypoll_reader:
+        total_votes = total_votes + 1
+        if row[2] not in candidates:
+            candidates.append(row[2])
+        elif row[2] == candidates[0]:
+            total_votes_0 = total_votes_0 + 1
+        elif row[2] == candidates[1]:
+            total_votes_1 = total_votes_1 + 1
+        elif row[2] == candidates[2]:
+            total_votes_2 = total_votes_2 + 1
+        elif row[2] == candidates[3]:
+            total_votes_3 = total_votes_3 + 1
 
-#print to terminal and more calculations
-print ("Financial Analysis")
-print ("----------------------------")
-print (f"Total Months: {len(date)}")
-print (f"Total: ${sum(profit_loss)}")
-average_change = sum(change_in_profit_loss) / (len(date) -1)
-print (f"Average change: ${average_change:.2f}")
-print (f"Greatest Increase in Profits: {max_profit_loss_date} ${max_profit}")
-print (f"Greatest Decrease in Profits: {min_profit_loss_date} ${max_loss}")
+#make percentages
+candidate_0_percentage = (total_votes_0 / total_votes) * 100
+candidate_1_percentage = (total_votes_1 / total_votes) * 100
+candidate_2_percentage = (total_votes_2 / total_votes) * 100
+candidate_3_percentage = (total_votes_3 / total_votes) * 100
 
-#print to text file and more calculations
-print ("Financial Analysis", file=open("PyBank.txt", "a"))
-print ("----------------------------", file=open("PyBank.txt", "a"))
-print (f"Total Months: {len(date)}", file=open("PyBank.txt", "a"))
-print (f"Total: ${sum(profit_loss)}", file=open("PyBank.txt", "a"))
-average_change = sum(change_in_profit_loss) / (len(date) -1)
-print (f"Average change: ${average_change:.2f}", file=open("PyBank.txt", "a"))
-print (f"Greatest Increase in Profits: {max_profit_loss_date} ${max_profit}", file=open("PyBank.txt", "a"))
-print (f"Greatest Decrease in Profits: {min_profit_loss_date} ${max_loss}", file=open("PyBank.txt", "a"))
+candidatelist = [candidate_0_percentage, candidate_1_percentage, candidate_2_percentage, candidate_3_percentage]
+winner = max(candidatelist)
+if winner == candidate_0_percentage:
+    overallwinner = candidates[0]
+elif winner == candidate_1_percentage:
+    overallwinner = candidates[1]
+elif winner == candidate_1_percentage:
+    overallwinner = candidates[2]
+else:
+    overallwinner = candidates[3]
+
+#print to terminal
+print ("Election Results")
+print ("-------------------------")
+print (f"Total Votes: {total_votes}")
+print ("-------------------------")
+print (f"{candidates[0]}: {candidate_0_percentage:.3f}% ({total_votes_0})")
+print (f"{candidates[1]}: {candidate_1_percentage:.3f}% ({total_votes_1})")
+print (f"{candidates[2]}: {candidate_2_percentage:.3f}% ({total_votes_2})")
+print (f"{candidates[3]}: {candidate_3_percentage:.3f}% ({total_votes_3})")
+print ("-------------------------")
+print (f"Winner: {overallwinner}")
+print ("-------------------------")
+
+#print to text file
+print ("Election Results",file=open("PyPoll.txt", "a"))
+print ("-------------------------", file=open("PyPoll.txt", "a"))
+print (f"Total Votes: {total_votes}", file=open("PyPoll.txt", "a"))
+print ("-------------------------", file=open("PyPoll.txt", "a"))
+print (f"{candidates[0]}: {candidate_0_percentage:.3f}% ({total_votes_0})", file=open("PyPoll.txt", "a"))
+print (f"{candidates[1]}: {candidate_1_percentage:.3f}% ({total_votes_1})", file=open("PyPoll.txt", "a"))
+print (f"{candidates[2]}: {candidate_2_percentage:.3f}% ({total_votes_2})", file=open("PyPoll.txt", "a"))
+print (f"{candidates[3]}: {candidate_3_percentage:.3f}% ({total_votes_3})", file=open("PyPoll.txt", "a"))
+print ("-------------------------", file=open("PyPoll.txt", "a"))
+print (f"Winner: {overallwinner}", file=open("PyPoll.txt", "a"))
+print ("-------------------------", file=open("PyPoll.txt", "a"))
